@@ -1,7 +1,7 @@
 import requests,time,csv
 csv_file = open('./message.csv','a',newline='',encoding='utf-8')
 writer = csv.writer(csv_file)
-writer.writerow(['店名','地址','电话'])
+writer.writerow(['店名','地址','电话', '图片', '价格','评分','评论数','分类'])
 headers = {
     'Accept': '*/*',
     'Accept-Encoding': 'gzip, deflate, br',
@@ -19,13 +19,21 @@ for i in range(30):
     print(url)
     res = requests.get(url,headers=headers).json()
     mes_list = res["data"]["searchResult"]
+    print(mes_list)
     time.sleep(1)
+    #imageUrl 
     for x in range(len(mes_list)):
         name = mes_list[x]["title"]
         addr = mes_list[x]["address"]
         phone_number = mes_list[x]["phone"]
-        print("name:",name,"address:",addr,"phone_number:",phone_number,)
-        msg_list.append([name,addr,phone_number])
+        img_number = mes_list[x]["imageUrl"]
+        print(type(mes_list[x]))
+        price = mes_list[x].get("price", "null")
+        avgscore = mes_list[x]["avgscore"]
+        comments = mes_list[x]["comments"]
+        backCateName =  mes_list[x]["backCateName"]
+        print("name:",name,"address:",addr,"phone_number:",phone_number,"img:", img_number, "price:", price, "avgscore:", avgscore, "comments", comments, "backCateName:", backCateName)
+        msg_list.append([name,addr,phone_number, img_number, price, avgscore, comments, backCateName])
 for row in msg_list:
         writer.writerow(row)
 csv_file.close()
